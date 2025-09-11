@@ -1,29 +1,27 @@
 import math
 
-def is_prime(a):
-    a = int(a)
-    if (a == 1):
+def is_prime(n):
+    if (n == 1):
         return False
-    for i in range(2, int(math.sqrt(a))+1):
-        if (a % i == 0):
+    for i in range(2, int(math.sqrt(n))+1):
+        if (n % i == 0):    
             return False
     return True
-    
 
-def convert(n,k):
-    result = ""
-    while (n > 0):
-        a,b = divmod(n,k)
-        n = a
-        result += str(b)
-    return result[::-1]
-    
+def convert(n, k):
+    answer = ""
+    while n > 0:
+        n,b = divmod(n,k)
+        answer += str(b)
+    return answer[::-1]
 
 def solution(n, k):
     answer = 0
     result = convert(n,k)
     result = result.split("0")
     for r in result:
-        if (r != "" and is_prime(r)):
+        if (r == ""):
+            continue
+        if (is_prime(int(r))):
             answer += 1
     return answer
