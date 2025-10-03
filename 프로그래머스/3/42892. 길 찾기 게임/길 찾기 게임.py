@@ -29,8 +29,8 @@ def solution(nodeinfo):
                 elif (root[0] > node_list[i][0]):
                     left.append(node_list[i])
 
-            right.sort(key= lambda x: (-x[1]))
-            left.sort(key= lambda x: (-x[1]))
+            # right.sort(key= lambda x: (-x[1],  x[0]))
+            # left.sort(key= lambda x: (-x[1],  x[0]))
 
             pre_result.append(root[2])
             make_order(left)
