@@ -44,37 +44,24 @@ def solution(n, k, cmd):
         node = remove_list.pop() # 마지막 거 꺼내기
         pre = nl[node][0]
         post = nl[node][1]
-        # print(pre, post)
         
         if pre != -1:
             nl[pre][1] = node
         if post != -1:
             nl[post][0] = node
-        # nl[pre][1] = node
-        # nl[post][0] = node
-        
-        
-        
         result[node] = "O"
 
-    # print(nl)
     for c in cmd:
         if (c == "C"):
             k = cut(k)
-            # print(k, nl)
         elif (c == "Z"):
             z()
-            # print(k, nl)
         else:
             c, num = c.split(" ")
             if (c == "U"):
                 k = up(k, num)
-                # print(k, nl)
             else:
                 k = down(k, num)
-                # print(k,nl)
-    
-    # print(*result)
-    for r in result:
-        answer += r
-    return answer
+
+    return "".join(result)
+    # return answer
