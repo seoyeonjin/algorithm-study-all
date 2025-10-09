@@ -1,8 +1,10 @@
+from collections import deque
+
 def solution(info, query):
     answer = []
     info_dict = {
         'cpp': '0', 'java': '1', 'python':'2',
-        'backend': '0', 'frontend': '1',
+        'backend': '0', 'frontend': '1', 
         'junior': '0', 'senior':'1',
         'chicken':'0', 'pizza': '1'
     }
@@ -19,6 +21,10 @@ def solution(info, query):
             p_dict[key] = [num]
         else:
             p_dict[key].append(num)
+    
+    for p in p_dict:
+        p_dict[p].sort()
+    
     # print(p_dict)
     
     for q in query:
@@ -29,30 +35,6 @@ def solution(info, query):
         key = ""
         cnt = 0
         
-        def dfs(i, key, num):
-            if (i == 4):
-                key_list.append(key)
-                # if (key in info_dict): 
-                #     p_list = info_dict[key]
-                #     for p in p_list:
-                #         if (p >= num):
-                #             cnt += 1 
-            else:
-                if (i == 0):
-                    if (key[i] == '-'): # 아무거나면
-                        dfs(i+1, "0"+key[1:], num)
-                        dfs(i+1, "1"+key[1:], num)
-                        dfs(i+1, "2"+key[1:], num)
-                    else:
-                        dfs(i+1, key,num)
-                else:  # 나머지는
-                    if (key[i] == '-'): # 아무거나면
-                        dfs(i+1, key[:i] + "0" + key[i+1:], num)
-                        dfs(i+1, key[:i] + "1" + key[i+1:], num)
-                    else:
-                        dfs(i+1, key,num)
-            
-        
         for temp in ql[:-1]:
             if (temp == 'and'):
                 continue
@@ -60,9 +42,46 @@ def solution(info, query):
                 key += '-'
             else:
                 key += info_dict[temp]
-        dfs(0, key, num)
+        # dfs(0, key, num)
         
-#         while '-' not in key:
+        
+        que = deque()
+        
+        if (key[0] == "-"):
+            que.append("0")
+            que.append("1")
+            que.append("2")
+        else:
+            que.append(key[0])
+        
+        while que:
+            temp = que.popleft() # 하나 뽑아
+            index = len(temp) # 1 에 가서 추가해야돼
+            if (index == 4):
+                key_list.append(temp)
+            else:
+                if (key[index] == "-"): 
+                    que.append(temp+"0")
+                    que.append(temp+"1")
+                else:
+                    que.append(temp+key[index])       
+        
+        
+        def search(num_list, num): # 기준이 되는 num 보다 크거나 같은 것의 개수
+            start = 0
+            end = len(num_list)
+            # cnt = 0
+    
+            while start < end:
+                # print(num_list, num, start, end)
+                mid = int((start+end) // 2 ) # 중간 인덱스 
+                if (num_list[mid] < num):
+                    start = mid + 1
+                elif (num_list[mid] >= num):
+                    end = mid
+            return len(num_list) - end
+            
+                
             
         
         for key in key_list:
@@ -71,19 +90,8 @@ def solution(info, query):
             if key in p_dict:
                 p_list = p_dict[key]
                 # print(p_list)
-                for p in p_list:
-                    if (p >= num):
-                        cnt += 1
+                # 이진 탐색?
+                cnt += search(p_list, num)
         answer.append(cnt)
-                
-            # print(temp)
-    
-#     if ('01010' not in p ):
-#         p['01010'] = [1]    
-#     else:
-#         p['01010'].append(2)
-#     print(p)
-    # for i in info:
-    #     for j in query:
-    #         answer.append((i,j))
+
     return answer
