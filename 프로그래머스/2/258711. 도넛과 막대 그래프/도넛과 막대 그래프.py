@@ -1,23 +1,45 @@
 def solution(edges):
-    max_node = max(max(a,b) for a,b in edges)
-    in_out = [[0,0] for _ in range(max_node+1)]
+    answer = []
+    node = [[0,0] for i in range(1000001)] # 초기화
+    # 각 노드별 들어오는 거, 나가는 거
     
-    for a,b in edges:
-        in_out[a][1] += 1
-        in_out[b][0] += 1
+    start = -1
+    for e in edges:
+        a,b= e
+        node[a][1] += 1
+        node[b][0] += 1
+    # 나가는 점이 2개 이상 있는 데 들어오는 점은 없는 점 -> 생성한 정점
+    # 나가는 화살표의 개수가 전체 모양의 개수다 ! 
+    for i in range(len(node)):
+        n = node[i]
+        if (n[0] == 0 and n[1] >= 2): 
+            start = i
+    total_cnt = node[start][1]
+    # print("total_cnt: ", total_cnt)
     
-    if len(edges) == 1 and edges[0][0] == edges[0][1]:
-        return [edges[0][0], 1, 0, 0]
-
-    bar_count   = sum(1 for i,o in in_out if i >= 1 and o == 0)
-    eight_count = sum(1 for i,o in in_out if i >= 2 and o >= 2)
-
-    start_node = -1
-    max_out = -1
-    for k,(i,o) in enumerate(in_out):
-        if i == 0 and o >= 2:
-            start_node, max_out = k, o
-            break
+    # print(node)
+    bar_cnt = 0
+    for e in edges:
+        a,b = e
+        if (a == start):
+            node[b][0] -= 1
+            if (node[b][0] == 0 and node[b][1] == 0):
+                bar_cnt += 1
     
-    donut_count = max_out - bar_count - eight_count
-    return [start_node, donut_count, bar_count, eight_count]
+    # 8자 모양 그래프의 개수는? 
+    eight_cnt = 0
+    for n in node:
+        if (n[0] == 2 and n[1] == 2): 
+            eight_cnt += 1
+    
+    # 막대 모양 그래프의 개수는? 
+    
+    for n in node:
+        if (n[0] == 0 and n[1] == 1): 
+            bar_cnt += 1
+    
+    donut_cnt = total_cnt - eight_cnt - bar_cnt
+    answer = [start, donut_cnt, bar_cnt, eight_cnt]
+    # print(node)
+   
+    return answer
