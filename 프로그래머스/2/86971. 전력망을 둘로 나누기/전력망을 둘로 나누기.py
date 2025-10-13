@@ -1,38 +1,42 @@
-def solution(n, wires):
-    answer = 1e9
-    
-    edges = [[] for i in range(n+1)] # 연결
-    # visited = [0 for i in range(n+1)] 
-    
-    def dfs(node, visited):
-        visited[node] = True
-        cnt = 1 
-        for a in edges[node]:
-            if not visited[a]:
-                cnt += dfs(a, visited)
-        return cnt
-        
-    
-    for w in wires:
-        a,b = w
-        edges[a].append(b)
-        edges[b].append(a)
-    
-    for w in wires:
-        a,b = w  # 제거할 엣지
-        edges[a].remove(b)
-        edges[b].remove(a)
-        
-        visited = [False] * (n+1)
-        acnt = dfs(a, visited)
-        bcnt = dfs(b, visited)
+from collections import deque
 
-        sub = abs(acnt - bcnt) # 가능한 비슷하도록 나눈다
-        # print("b: ", visited)
-        answer = min(answer, sub)
-        
+def solution(n, wires):
+    answer = -1
+    min_ans = 1e9
+    
+    edges = [[] for i in range(n+1)]
+    
+    
+    for w in wires:
+        a, b = w
         edges[a].append(b)
         edges[b].append(a)
         
-    # print(edges)
+    for w in wires:
+        a, b = w
+        visited = [0 for i in range(n+1)]
+        edges[a].remove(b)
+        edges[b].remove(a) 
+        
+        que = deque()
+        cnt = 1
+        que.append(a)
+        visited[a] = 1
+        
+        while que:
+            node = que.popleft()
+            for e in edges[node]:
+                if (not visited[e]):
+                    cnt += 1
+                    que.append(e)
+                    visited[e] = 1
+                    
+        bcnt = n - cnt
+        ans = abs(bcnt - cnt)
+        min_ans = min(min_ans, ans)
+        
+        
+        edges[a].append(b)
+        edges[b].append(a)
+    answer = (min_ans)
     return answer
