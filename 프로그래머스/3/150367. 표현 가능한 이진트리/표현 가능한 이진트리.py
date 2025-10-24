@@ -1,66 +1,43 @@
 import math
-from collections import deque
-
 
 def solution(numbers):
     answer = []
-    # number를 표현하는 데 필요한 최소 자리수
-    for num in numbers: 
-        binn = bin(num)
-        length = len(binn[2:]) # 자릿수
-        # print("length: ", length)
-        k = math.ceil(math.log(length+1, 2)) 
-        min_length = 2**k -1 # 전체 노드 수
-
-        if (min_length > length):
-            str_num = "0"*(min_length - length) + (binn[2:])
+    
+    def dfs(temp):
+        # print(temp)
+        if (len(temp) > 1):   
+            mid = len(temp) // 2
+            if (temp[mid] == "0" and "1" in temp):
+                return 0
+            else: # 1이면 나머지에 대해 검사
+                r1 = dfs(temp[:mid])
+                r2 =  dfs(temp[mid+1:])
+                if (r1 == 0 and "1" in temp[:mid]): # 자식 중 0이 있으면서 0이면
+                    return 0
+                if (r2 == 0 and "1" in temp[mid+1:]):
+                    return 0
+                return 1
         else:
-            str_num =  str(binn[2:])
-        # print(binn[2:], 2**k-1, str_num)
-        # print(str_num , binn[2:]) 
-        # str_num = "1011111"
-        flag = False
-        # 하나라도 0이 있으면 절대 못함
-        root = int(len(str_num) // 2)
-        move = int((root+1) //2 ) 
-        # print(root, move)
-        que = deque()
-        que.append(str_num)
-        while que:
-            # print(que)
-            sub = que.popleft()
-            mid = int(len(sub) // 2) # 중간 인덱스
-            left = sub[:mid] # 왼쪽
-            right = sub[mid+1:] # 오른쪽
-            # print(sub, left, right)
-            if (sub[mid] == "0"):
-                if "1" in left or "1" in right:
-                    flag = True
-                    break
-            else: 
-                if (len(left) != 0):
-                    que.append(left)
-                if (len(right) != 0):
-                    que.append(right)
-            # if (move == 0): 
-            #     continue
-            # else:
-            #     if (str_num[root] == "0"): # 0이면 양쪽 다 0이어야 함
-            #         if (str_num[root-move] != "0" or str_num[root+move] != "0"): #이러면
-            #             flag = True
-            #             break
-            #     else:
-            #         que.append((root-move, int(move//2)))
-            #         que.append((root+move, int(move//2)))
+            return 1
+                
+    # 중위 순회
+    for n in numbers:
+        # 몇자리 필요한지 a확인
+        bin_n = bin(n)[2:]
+        k = 1
+        while (2 ** k - 1) < len(bin_n):
+            k += 1
+        full_bin = bin_n.zfill(2 ** k - 1)
+        # k = math.ceil(math.log(len(bin_n), 2))
+        # full_bin = "0" * (2**k-1-(len(bin_n))) + bin_n
+        # print(full_bin)
+        # 중위 순회하는데 
         
-                    
-        # for i in range(1, len(str_num), 2):
-        #     if (str_num[i] == "0"): 
-        #         if (str_num[i-1] != "0" or str_num[i+1] != "0"): 
-        #             flag = True
-        if (flag == True): 
+        result = dfs(full_bin)
+        # print(result)
+        if (result == 0):
             answer.append(0)
-        else:
+        else: 
             answer.append(1)
-
+    
     return answer
