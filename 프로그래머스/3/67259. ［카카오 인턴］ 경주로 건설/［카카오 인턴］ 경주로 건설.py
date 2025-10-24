@@ -1,71 +1,54 @@
 from collections import deque
 
 def solution(board):
-    dx = [0,0,-1,1]
+    answer = 0
+    # 0->비어있음
+    # 1-> 벽
+    # 직선도로 -> 100원 
+    # 코너 -> 500원
+    
+    dx = [0,0,-1,1] # 오른쪽, 왼쪽, 위쪽, 아래쪽
     dy = [1,-1,0,0]
     
-    answer = 0
-    
+    N = len(board)
+    # v -> 25 * 25 이다 -> V^2 이어서 다 돌아도 될듯
     que = deque()
-
-    cnt = 0
-    cnt_list = [[0 for i in range(25)] for j in range(25)] 
-    que.append((0,0,-1, cnt))
-    visited = [[0 for i in range(25)] for j in range(25)] 
-    visited[0][0] = 1
+    que.append((0,0,0,0)) # 시작점x, y, direction, 비용
+    visited = [[0 for i in range(N)] for j in range(N)]
+    visited[0][0] = -1
     
-    n = len(board)
-    
-    while que:
-        print(que)
-        for c in cnt_list[:3]:
-            print(c[:3])
-        a,b, direct, cnt = que.popleft()
-        if (a == n-1 and b == n-1):
-            print(cnt)
-        #     cnt_list.append(cnt)
-        # else:
-        for i in range(2): # 세로로 움직일 때
-            nx = a + dx[i]
-            ny = b + dy[i]
-            if (0 <= nx < n and 0 <= ny < n and board[nx][ny] == 0):
-                if (direct == 0 or direct == -1):
-                    cnt_list[nx][ny] = min(cnt_list[a][b] +100, cnt+100)
-                    if not visited[nx][ny]:
-                        que.append((nx, ny, 0, cnt_list[nx][ny]))
-                        visited[nx][ny] = 1
-                else:
-                    cnt_list[nx][ny] = min(cnt_list[a][b] +600, cnt+600)
-                    
-                    if not visited[nx][ny]:
-                        que.append((nx, ny, 0, cnt_list[nx][ny]))
-                        visited[nx][ny] = 1
-        for i in range(2,4): # 가로로 움직일 때
-            nx = a + dx[i]
-            ny = b + dy[i]
-            if (0 <= nx < n and 0 <= ny < n and board[nx][ny] == 0):
-                if (direct == 1 or direct == -1):
-                    cnt_list[nx][ny] = min(cnt_list[a][b] +100, cnt+100)
-                    if not visited[nx][ny]:
-                        que.append((nx, ny, 1, cnt_list[nx][ny]))
-                        visited[nx][ny] = 1
-                else:
-                    cnt_list[nx][ny] = min(cnt_list[a][b] +600, cnt+600)
-                    
-                    if not visited[nx][ny]:
-                        que.append((nx, ny, 1, cnt_list[nx][ny]))
-                        visited[nx][ny] = 1
+    expan_list = []
+    while que: 
+        # print(que)
+        x, y, direct, expan = que.popleft()
 
-        # for i in range(2, 4): # 가로로 움직일 때
-        #     nx = a + dx[i]
-        #     ny = b + dy[i]
-        #     if (0 <= nx < n and 0 <= ny < n and board[nx][ny] == 0 and not visited[nx][ny]):
-        #         if (direct == 1 or direct == -1):
-        #             que.append((nx, ny, 1, cnt + 100))
-        #         else:
-        #             que.append((nx, ny, 1, cnt + 600))
-        #         visited[nx][ny] = 1
-    # print(cnt_list)
-    # print(cnt_list[n-1][n-1])
-  
+        if (x == N -1 and y == N-1):
+            expan_list.append(expan)
+        for i in range(4):
+            nx = dx[i] + x
+            ny = dy[i] + y
+            if (0<=nx<N and 0<=ny<N and board[nx][ny] == 0): # 갈 수 있으면
+                if (x == 0 and y == 0): # 시작점이면 비용 계산
+                    newdirect = i // 2
+                    newexpan = expan + 100
+                else:
+                    newdirect = i // 2
+                    if (newdirect != direct):
+                        newexpan = expan + 600
+                    else:
+                        newexpan = expan + 100
+
+                if (direct == newdirect): 
+                    if (visited[nx][ny] == 0 or visited[nx][ny] >= newexpan):
+                        visited[nx][ny] = newexpan
+                        que.append((nx,ny,newdirect, newexpan))
+                else:
+                    if (visited[nx][ny] == 0 or visited[nx][ny] > newexpan - 500):
+                        visited[nx][ny] = newexpan
+                        que.append((nx,ny,newdirect, newexpan))
+                    
+
+    # print(expan_list)
+    answer = min(expan_list)
+    
     return answer
