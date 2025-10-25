@@ -38,41 +38,37 @@ def solution(play_time, adv_time, logs):
     
     for i in range(1,len(times)):
         times[i] += times[i-1]
-    
-    
-    # print(tts("1:20:15"))
-    # print(tts("02:03:55"))
-    # print(times[5458:6314+2])
-    # log 는 문자열 배열
-    
-    # for i in range(len(times)):
-    #     times[i] += times[i-1] 
 
-    psum = [0] * (play_s + 2)
-    for i in range(play_s):
-        psum[i+1]=psum[i]+times[i]
+    
+    for i in range(1, len(times)):
+        times[i] += times[i-1] 
+
     adv_s = tts(adv_time)
     
     start_list.sort()
     
-    max_viewer = 0
+    max_viewer = times[adv_s - 1]
     max_start = 0
+    
+    for s in range(adv_s, play_s + 1):
+        viewer = times[s] - times[s - adv_s]
+        if viewer > max_viewer:
+            max_viewer = viewer
+            max_start = s - adv_s + 1
 
-    # 모든 시작점마다 돌면서
-    for s in range(0, play_s-adv_s+1):
-        viewer = 0
-        if (s + adv_s <= play_s): # 그 안에 끝나면
-            viewer = psum[s+adv_s] - psum[s]
-        else:
-            continue
-            # viewer = times[play_s] - times[play_s-adv_s]
-        # print(stt(s+adv_s), stt(s), viewer, stt(viewer))
-        if (viewer > max_viewer):
-            max_viewer = max(viewer, max_viewer)
-            max_start = s
-        # elif (viewer == max_viewer):
-        #     if (s < max_start):
-        #         max_start = s
+    return stt(max_start)
+
+#     # 모든 시작점마다 돌면서
+#     for s in range(0, play_s-adv_s+ 1):
+#         viewer = 0
+#         if (s + adv_s < play_s): # 그 안에 끝나면
+#             viewer = times[s+adv_s] - times[s]
+#         else:
+#             continue
+#         if (viewer > max_viewer):
+#             max_viewer = max(viewer, max_viewer)
+#             max_start = s + 1
+
         
     answer = (stt(max_start))
     return answer
