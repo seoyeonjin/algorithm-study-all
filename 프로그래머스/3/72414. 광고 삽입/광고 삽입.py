@@ -39,9 +39,14 @@ def solution(play_time, adv_time, logs):
     for i in range(1,len(times)):
         times[i] += times[i-1]
 
+    psum = [0] * (play_s + 2)
+    for i in range(play_s):
+        psum[i+1]=psum[i]+times[i]
     
     for i in range(1, len(times)):
         times[i] += times[i-1] 
+        
+    # print(psum[0] == times[0])
 
     adv_s = tts(adv_time)
     
@@ -50,12 +55,17 @@ def solution(play_time, adv_time, logs):
     max_viewer = times[adv_s - 1]
     max_start = 0
     
-    for s in range(adv_s, play_s + 1):
-        viewer = times[s] - times[s - adv_s]
+    # for s in range(adv_s, play_s + 1):
+    #     viewer = times[s] - times[s - adv_s]
+    #     if viewer > max_viewer:
+    #         max_viewer = viewer
+    #         max_start = s - adv_s + 1
+
+    for s in range(0, play_s-adv_s+ 1):
+        viewer = times[s+adv_s] - times[s]
         if viewer > max_viewer:
             max_viewer = viewer
-            max_start = s - adv_s + 1
-
+            max_start = s + 1
     return stt(max_start)
 
 #     # 모든 시작점마다 돌면서
