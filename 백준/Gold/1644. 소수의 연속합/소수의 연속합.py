@@ -1,51 +1,31 @@
-# 소수 리스트를 만들면 좋겠다. 
-
 n = int(input())
 
-primes = [True for _ in range(n+1)]
-for i in range(2, n+1):
-    if primes[i] == True:
-        for j in range(i*2, n+1, i):
+# 소수 리스트 만들기 (에라토스테네스의 체)
+primes = [True] * (n + 1)
+primes[0] = primes[1] = False
+
+for i in range(2, int(n ** 0.5) + 1):
+    if primes[i]:
+        for j in range(i * i, n + 1, i):
             primes[j] = False
 
-prime_list = []
+prime_list = [i for i in range(2, n + 1) if primes[i]]
 
-for i in range(2,n+1):
-    if (primes[i]):
-        prime_list.append(i)
+# 투 포인터로 연속된 소수의 합 구하기
+cnt = 0
+start, end = 0, 0
+current_sum = 0
 
-if (len(prime_list) != 0):
-    
-    start = 0
-    end = 1
-    sum = prime_list[start]
-    cnt = 0
+while True:
+    if current_sum >= n:
+        if current_sum == n:
+            cnt += 1
+        current_sum -= prime_list[start]
+        start += 1
+    elif end == len(prime_list):
+        break
+    else:
+        current_sum += prime_list[end]
+        end += 1
 
-    # print(prime_list, len(prime_list))
-    while start < end and end <= len(prime_list):
-        if (end == len(prime_list)):
-            while start < end:
-                if (sum == n):
-                    cnt += 1
-                    break
-                elif (sum > n ):
-                    sum -= prime_list[start]
-                    start += 1
-                else:
-                    break
-            break
-        else:
-            if (sum == n): # 같으면
-                cnt += 1
-                sum += prime_list[end]
-                end += 1
-            elif (sum < n):
-                sum += prime_list[end]
-                end += 1
-            else:
-                sum -= prime_list[start]
-                start += 1 
-            # print(sum, start, end)
-    print(cnt)
-else:
-    print(0)
+print(cnt)
