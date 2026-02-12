@@ -7,7 +7,6 @@
 # 활성칸 정보 찾기
 
 from itertools import combinations
-from copy import deepcopy
 from collections import deque
 
 n, m = map(int, input().split())
@@ -29,12 +28,13 @@ min_cnt = 1e9
 dx = [0,0,-1,1]
 dy = [1,-1,0,0]
 
-def bfs(ns, coms):
+def bfs(coms):
    
     # cnt = 0
     que = deque()
     visited = set()
     zero = 0
+    ns = nums # deepcopy 개선의 레거시
 
     for i in range(n):
         for j in range(n):
@@ -62,25 +62,15 @@ def bfs(ns, coms):
                         return cnt +1
                     que.append((nx,ny,cnt+1))
                     visited.add((nx,ny))
-                    ns[nx][ny] = 3
                 elif(ns[nx][ny] == 2 or ns[nx][ny] == 3):
                     que.append((nx,ny,cnt+1))
                     visited.add((nx,ny))
                     # ns[nx][ny] = 3
     return 1e9
             
-                            
-                
-
-
 
 for com in coms:
-    # print(com)
-    dnums = deepcopy(nums)
-    for m in com:
-        x, y = m
-        dnums[x][y] = 3 # 활성 바이러스
-    cnt = bfs(dnums, com)
+    cnt = bfs(com)
     # print(cnt)
     min_cnt = min(min_cnt, cnt)
 
