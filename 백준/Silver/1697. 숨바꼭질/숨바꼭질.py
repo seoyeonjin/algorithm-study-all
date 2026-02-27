@@ -8,25 +8,25 @@ N,M= map(int, input().split())
 
 ml = 150000
 
-dp = [1e9] * (ml)
+dist = [1e9] * (ml)
 
 que = deque()
 que.append(N)
-dp[N] = 0
+dist[N] = 0
 
 while que:
     node = que.popleft()
     if (node == M):
-        print(dp[node])
+        print(dist[node])
         break
-    if (node + 1 < ml and dp[node+1] == 1e9):
-        dp[node+1] = min(dp[node+1], dp[node] + 1)
+    if (node + 1 < ml and dist[node+1] == 1e9):
+        dist[node+1] = dist[node] + 1
         que.append(node+1)
-    if (node - 1 >= 0 and dp[node-1] == 1e9):
-        dp[node-1] = min(dp[node-1], dp[node] + 1)
+    if (node - 1 >= 0 and dist[node-1] == 1e9):
+        dist[node-1] = dist[node] + 1
         que.append(node-1)
-    if (node * 2 < ml and dp[node*2] == 1e9):
-        dp[node*2] = min(dp[node*2], dp[node] + 1)
+    if (node * 2 < ml and dist[node*2] == 1e9):
+        dist[node*2] = dist[node] + 1
         que.append(node*2)
 
 # print(dp[M])
