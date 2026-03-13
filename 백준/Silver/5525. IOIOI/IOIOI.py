@@ -1,6 +1,4 @@
-# 문자열 s와 정수 n 
-# n은 o의 개수
-# s안에 pn이 몇 군데 포함?
+
 
 N = int(input())    
 M = int(input()) # s의 길이 
@@ -15,6 +13,7 @@ for i in range(len(S)):
         bits += "1"
     
 # print(bits)
+
 com = ""
 
 cnt = 0
@@ -32,8 +31,9 @@ for i in range(len(S)-(2*N)):
     if (temp[0] == "0"):
         continue
     else:
-        if (com == temp): 
+        if (int(temp) + int(com) == int(com) * 2):
             cnt += 1
 print(cnt)
 
-    
+
+# 더하면 20202가 된다? -> 그러면 더해서 확인해보면 되는 거 아닌가?
