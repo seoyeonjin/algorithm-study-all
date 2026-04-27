@@ -1,6 +1,8 @@
 def solution(s):
-    num_list = list(map(int, s.split()))
-    min_num = min(num_list)
-    max_num = max(num_list)
-    answer = str(min_num) + " " + str(max_num)
+    answer = ''
+    
+    # 최소 최대 return
+    sList = list(map(int, s.split(" ")))
+    print(sList)
+    answer = str(min(sList)) + " " + str(max(sList))
     return answer
